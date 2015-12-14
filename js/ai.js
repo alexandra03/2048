@@ -1,10 +1,15 @@
-function AI() {
-
+function AI(game) {
+	this.game = game;
+	this.grid = this.game.grid;
 }
 
 
 // Calculate the number of open tiles
-AI.prototype.open_tiles = function (game) {
-	var grid = game.grid;
-	return grid.availableCells().length-1;	
+AI.prototype.open_tiles = function () {
+	return this.grid.availableCells().length-1;	
 };
+
+// Calculate the number of merges possible
+AI.prototype.num_merges = function () {
+
+}
