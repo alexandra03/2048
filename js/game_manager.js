@@ -180,6 +180,8 @@ GameManager.prototype.move = function (direction) {
     });
   });
 
+  this.AI.open_tiles(this);
+
   if (moved) {
     this.addRandomTile();
 
