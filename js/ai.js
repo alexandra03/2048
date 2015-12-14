@@ -1,6 +1,10 @@
 function AI(game) {
 	this.game = game;
 	this.grid = game.grid;
+
+	this.OTWeight  = 1;
+	this.NMWeight  = 1;
+	this.LNGWeight = 1;
 }
 
 
@@ -43,7 +47,7 @@ AI.prototype.numMerges = function () {
 };
 
 // Heuristic based on the grouping of large tiles
-AI.prototype.large_number_grouping = function () {
+AI.prototype.largeNumberGrouping = function () {
 	var cells = this.grid.cells;
 	// Find largest/second largest valued tiles
 	var max_val = 0;
@@ -84,3 +88,11 @@ AI.prototype.large_number_grouping = function () {
 
 	return totalDistance/(max_vals.length * second_max_vals.length);
 };
+
+AI.prototype.boardValue = function () {	
+	var openTiles = this.openTiles();
+	var numMerges = this.numMerges();
+	var lrgeNumGr = this.largeNumberGrouping();
+
+	return openTiles + numMerges + lrgeNumGr;
+}

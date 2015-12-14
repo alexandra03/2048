@@ -192,7 +192,6 @@ GameManager.prototype.move = function (direction) {
     this.actuate();
   }
 
-  this.AI.large_number_grouping(this);
 };
 
 // Get the vector representing the chosen direction
