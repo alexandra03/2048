@@ -14,7 +14,7 @@ AI.prototype.numMerges = function () {
   var matches = 0;
   var tile, cell, other;
 
-    for (var x = 0; x < this.game.size; x++) {
+  for (var x = 0; x < this.game.size; x++) {
     for (var y = 0; y < this.game.size; y++) {
       tile = this.grid.cellContent({ x: x, y: y });
 
