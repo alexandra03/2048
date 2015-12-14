@@ -3,7 +3,6 @@ function GameManager(size, InputManager, Actuator, StorageManager, AI) {
   this.inputManager   = new InputManager;
   this.storageManager = new StorageManager;
   this.actuator       = new Actuator;
-  this.AI             = new AI(this);
 
   this.startTiles     = 2;
 
@@ -54,6 +53,9 @@ GameManager.prototype.setup = function () {
     // Add the initial tiles
     this.addStartTiles();
   }
+
+  // Start up the AI
+  this.AI = new AI(this);
 
   // Update the actuator
   this.actuate();

@@ -1,6 +1,6 @@
 function AI(game) {
 	this.game = game;
-	this.grid = this.game.grid;
+	this.grid = game.grid;
 }
 
 
