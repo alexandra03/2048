@@ -5,6 +5,8 @@ function AI(game) {
 	this.OTWeight  = 1;
 	this.NMWeight  = 1;
 	this.LNGWeight = 1;
+
+	this.checkThreshold = 6;
 }
 
 
@@ -86,7 +88,7 @@ AI.prototype.largeNumberGrouping = function () {
 		}
 	}
 
-	return totalDistance/(max_vals.length * second_max_vals.length);
+	return 6 - totalDistance/(max_vals.length * second_max_vals.length);
 };
 
 AI.prototype.boardValue = function () {	
@@ -96,3 +98,27 @@ AI.prototype.boardValue = function () {
 
 	return openTiles + numMerges + lrgeNumGr;
 }
+
+AI.prototype.lookAhead = function () {
+	var best_direction = 0;
+
+	for (var direction = 0; direction < 4; direction++) {
+		// var serialized = this.game.serialize();
+		// var game = new GameManager()
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
