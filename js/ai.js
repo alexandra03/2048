@@ -11,27 +11,27 @@ function AI(game) {
 
 
 // Calculate the number of open tiles
-AI.prototype.openTiles = function () {
-	return this.grid.availableCells().length-1;	
+AI.prototype.openTiles = function (grid) {
+	return grid.availableCells().length-1;	
 };
 
 // Calculate the number of merges possible
-AI.prototype.numMerges = function () {
+AI.prototype.numMerges = function (game) {
   var matches = 0;
   var tile, cell, other;
 
   for (var x = 0; x < this.game.size; x++) {
     for (var y = 0; y < this.game.size; y++) {
-      tile = this.grid.cellContent({ x: x, y: y });
+      tile = game.grid.cellContent({ x: x, y: y });
 
       if (!tile) { continue; }
       
       for (var direction = 0; direction < 4; direction++) {
-        var vector = this.game.getVector(direction);
+        var vector = game.getVector(direction);
 
-        for (var i = 1; i < this.game.size; i++) {
+        for (var i = 1; i < game.size; i++) {
           cell   = { x: x + i*vector.x, y: y + i*vector.y };
-          other  = this.grid.cellContent(cell);
+          other  = game.grid.cellContent(cell);
   		  
   		  if (other == null) { continue; }
 
@@ -49,8 +49,8 @@ AI.prototype.numMerges = function () {
 };
 
 // Heuristic based on the grouping of large tiles
-AI.prototype.largeNumberGrouping = function () {
-	var cells = this.grid.cells;
+AI.prototype.largeNumberGrouping = function (grid) {
+	var cells = grid.cells;
 	// Find largest/second largest valued tiles
 	var max_val = 0;
 	var second_max_val = 0;
@@ -91,21 +91,35 @@ AI.prototype.largeNumberGrouping = function () {
 	return 6 - totalDistance/(max_vals.length * second_max_vals.length);
 };
 
-AI.prototype.boardValue = function () {	
-	var openTiles = this.openTiles();
-	var numMerges = this.numMerges();
-	var lrgeNumGr = this.largeNumberGrouping();
+AI.prototype.boardValue = function (game) {	
+	var openTiles = this.openTiles(game.grid);
+	var numMerges = this.numMerges(game);
+	var lrgeNumGr = this.largeNumberGrouping(game.grid);
 
 	return openTiles + numMerges + lrgeNumGr;
 }
 
 AI.prototype.lookAhead = function () {
 	var best_direction = 0;
+	var best_board_value = 0;
+	var board_value, game;
 
 	for (var direction = 0; direction < 4; direction++) {
-		// var serialized = this.game.serialize();
-		// var game = new GameManager()
+		game = jQuery.extend(GameManager, {}, this.game);
+		game.move(direction);
+
+		board_value = this.boardValue(game);
+
+		if (board_value > best_board_value){
+			best_board_value = board_value;
+			best_direction = direction;
+		}
 	}
+	console.log("TEST");
+	console.log(best_direction);
+	console.log(best_board_value);
+
+	return best_direction;
 }
 
 
