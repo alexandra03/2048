@@ -103,7 +103,7 @@ AI.prototype.lookAhead = function () {
 	var best_direction = 0;
 	var best_board_value = 0;
 	var board_value, game;
-
+	
 	for (var direction = 0; direction < 4; direction++) {
 		game = jQuery.extend(GameManager, {}, this.game);
 		game.move(direction);

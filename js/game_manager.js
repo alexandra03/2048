@@ -191,6 +191,7 @@ GameManager.prototype.move = function (direction) {
 
     this.actuate();
   }
+  console.log(this.AI.openTiles());
 
 };
 
