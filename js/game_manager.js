@@ -83,8 +83,26 @@ GameManager.prototype.setup = function () {
   // Update the actuator
   this.actuate();
 
-    console.log("HERE");
-    this.AI.lookAhead();
+  // Start the AI       
+  this.search();   
+};
+
+GameManager.prototype.search = function() {
+  var move = this.AI.lookAhead();
+  this.move(move);
+
+  if (this.isGameTerminated()) { 
+    return;
+  }
+
+  var self = this;
+
+  setTimeout(
+    function() { 
+      self.search();
+    }, 
+    100
+  );
 };
 
 // Set up the initial tiles to start the game with
@@ -116,7 +134,7 @@ GameManager.prototype.actuate = function () {
   } else {
     this.storageManager.setGameState(this.serialize());
   }
-console.log("GETING HERE")
+
   this.actuator.actuate(this.grid, {
     score:      this.score,
     over:       this.over,
@@ -156,11 +174,11 @@ GameManager.prototype.moveTile = function (tile, cell) {
 };
 
 // Move tiles on the grid in the specified direction
-GameManager.prototype.move = function (direction, actuate) {
+GameManager.prototype.move = function (direction, lookAhead) {
   // 0: up, 1: right, 2: down, 3: left
   var self = this;
 
-  if (this.isGameTerminated()) return; // Don't do anything if the game's over
+  if (this.isGameTerminated() && !lookAhead) return; // Don't do anything if the game's over
 
   var cell, tile;
 
@@ -213,13 +231,11 @@ GameManager.prototype.move = function (direction, actuate) {
   if (moved) {
     this.addRandomTile();
 
-    if (!this.movesAvailable()) {
+    if (!this.movesAvailable() && !lookAhead) {
       this.over = true; // Game over!
     }
 
-    if (!actuate) {
-      this.actuate();
-    }
+   this.actuate();
   }
 
 };

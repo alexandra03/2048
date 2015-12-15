@@ -102,23 +102,20 @@ AI.prototype.boardValue = function (game) {
 AI.prototype.lookAhead = function () {
 	var best_direction = 0;
 	var best_board_value = 0;
-	var board_value, game;
-	console.log(this.grid)
-	for (var direction = 0; direction < 1; direction++) {
-		game = jQuery.extend(GameManager, {}, this.game);
-		game.move(direction, true);
+	var board_value;
+	var original_board_value = this.boardValue(this.game);
 
-		board_value = this.boardValue(game);
+	for (var direction = 0; direction < 4; direction++) {
+		this.game.move(direction, true);
+		this.game.actuator.clearMessage();
+		board_value = this.boardValue(this.game);
 
-		if (board_value > best_board_value){
+		if (board_value > best_board_value && original_board_value!=board_value){
 			best_board_value = board_value;
 			best_direction = direction;
 		}
+		this.game.undo();
 	}
-	console.log(game.grid);
-	console.log("TEST");
-	console.log(best_direction);
-	console.log(best_board_value);
 
 	return best_direction;
 }
