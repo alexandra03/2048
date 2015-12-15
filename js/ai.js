@@ -103,10 +103,10 @@ AI.prototype.lookAhead = function () {
 	var best_direction = 0;
 	var best_board_value = 0;
 	var board_value, game;
-	
-	for (var direction = 0; direction < 4; direction++) {
+	console.log(this.grid)
+	for (var direction = 0; direction < 1; direction++) {
 		game = jQuery.extend(GameManager, {}, this.game);
-		game.move(direction);
+		game.move(direction, true);
 
 		board_value = this.boardValue(game);
 
@@ -115,6 +115,7 @@ AI.prototype.lookAhead = function () {
 			best_direction = direction;
 		}
 	}
+	console.log(game.grid);
 	console.log("TEST");
 	console.log(best_direction);
 	console.log(best_board_value);

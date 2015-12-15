@@ -1,11 +1,11 @@
-function GameManager(size, InputManager, Actuator, StorageManager, AI) {
+function GameManager(size, InputManager, Actuator, StorageManager, AI, BottomlessStack) {
   this.size           = size; // Size of the grid
   this.inputManager   = new InputManager;
   this.storageManager = new StorageManager;
   this.actuator       = new Actuator;
 
   this.startTiles     = 2;
-
+  this.history        = new BottomlessStack (100);
   this.inputManager.on("move", this.move.bind(this));
   this.inputManager.on("restart", this.restart.bind(this));
   this.inputManager.on("keepPlaying", this.keepPlaying.bind(this));
@@ -18,6 +18,29 @@ GameManager.prototype.restart = function () {
   this.storageManager.clearGameState();
   this.actuator.continueGame(); // Clear the game won/lost message
   this.setup();
+};
+
+GameManager.prototype.undo = function () {
+  this.loadSavedState();
+  this.actuate();
+  this.actuator.clearMessage();
+};
+
+GameManager.prototype.saveState = function () {
+  this.history.push ({
+    grid  : this.grid.clone(),
+    score : this.score,
+    over  : this.over,
+    won   : this.won
+  });
+};
+
+GameManager.prototype.loadSavedState = function () {
+  var old_state = this.history.pop ();
+  this.grid  = old_state.grid;
+  this.score = old_state.score;
+  this.over  = old_state.over;
+  this.won   = old_state.won;
 };
 
 // Keep playing after winning (allows going over 2048)
@@ -59,6 +82,9 @@ GameManager.prototype.setup = function () {
 
   // Update the actuator
   this.actuate();
+
+    console.log("HERE");
+    this.AI.lookAhead();
 };
 
 // Set up the initial tiles to start the game with
@@ -90,7 +116,7 @@ GameManager.prototype.actuate = function () {
   } else {
     this.storageManager.setGameState(this.serialize());
   }
-
+console.log("GETING HERE")
   this.actuator.actuate(this.grid, {
     score:      this.score,
     over:       this.over,
@@ -130,7 +156,7 @@ GameManager.prototype.moveTile = function (tile, cell) {
 };
 
 // Move tiles on the grid in the specified direction
-GameManager.prototype.move = function (direction) {
+GameManager.prototype.move = function (direction, actuate) {
   // 0: up, 1: right, 2: down, 3: left
   var self = this;
 
@@ -141,6 +167,8 @@ GameManager.prototype.move = function (direction) {
   var vector     = this.getVector(direction);
   var traversals = this.buildTraversals(vector);
   var moved      = false;
+
+  this.saveState();
 
   // Save the current tile positions and remove merger information
   this.prepareTiles();
@@ -189,9 +217,10 @@ GameManager.prototype.move = function (direction) {
       this.over = true; // Game over!
     }
 
-    this.actuate();
+    if (!actuate) {
+      this.actuate();
+    }
   }
-  console.log(this.AI.openTiles());
 
 };
 

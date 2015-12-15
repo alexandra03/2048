@@ -7,6 +7,13 @@ function Tile(position, value) {
   this.mergedFrom       = null; // Tracks tiles that merged together
 }
 
+
+Tile.prototype.clone = function () {
+  return new Tile ({x: this.x,
+                    y: this.y},
+                   this.value);
+};
+
 Tile.prototype.savePosition = function () {
   this.previousPosition = { x: this.x, y: this.y };
 };
