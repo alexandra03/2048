@@ -2,17 +2,17 @@
 window.requestAnimationFrame(function () {
   new GameManager(4, KeyboardInputManager, HTMLActuator, LocalStorageManager, AI, BottomlessStack);
 
-  // TODO: This code is in need of a refactor (along with the rest)
-  var storage     = new LocalStorageManager;
-  var noticeClose = document.querySelector(".notice-close-button");
-  var notice      = document.querySelector(".app-notice");
-  if (storage.getNoticeClosed()) {
-    notice.parentNode.removeChild(notice);
-  } else {
-    noticeClose.addEventListener("click", function () {
-      notice.parentNode.removeChild(notice);
-      storage.setNoticeClosed(true);
-      ga("send", "event", "notice", "closed");
-    });
-  }
+//   // TODO: This code is in need of a refactor (along with the rest)
+//   var storage     = new LocalStorageManager;
+//   var noticeClose = document.querySelector(".notice-close-button");
+//   var notice      = document.querySelector(".app-notice");
+//   if (storage.getNoticeClosed()) {
+//     notice.parentNode.removeChild(notice);
+//   } else {
+//     noticeClose.addEventListener("click", function () {
+//       notice.parentNode.removeChild(notice);
+//       storage.setNoticeClosed(true);
+//       ga("send", "event", "notice", "closed");
+//     });
+//   }
 });
