@@ -1,11 +1,11 @@
-function GameManager(size, InputManager, Actuator, StorageManager) {
+function GameManager(size, InputManager, Actuator, StorageManager, AI, BottomlessStack) {
   this.size           = size; // Size of the grid
   this.inputManager   = new InputManager;
   this.storageManager = new StorageManager;
   this.actuator       = new Actuator;
 
   this.startTiles     = 2;
-
+  this.history        = new BottomlessStack (100);
   this.inputManager.on("move", this.move.bind(this));
   this.inputManager.on("restart", this.restart.bind(this));
   this.inputManager.on("keepPlaying", this.keepPlaying.bind(this));
@@ -18,6 +18,29 @@ GameManager.prototype.restart = function () {
   this.storageManager.clearGameState();
   this.actuator.continueGame(); // Clear the game won/lost message
   this.setup();
+};
+
+GameManager.prototype.undo = function () {
+  this.loadSavedState();
+  this.actuate();
+  this.actuator.clearMessage();
+};
+
+GameManager.prototype.saveState = function () {
+  this.history.push ({
+    grid  : this.grid.clone(),
+    score : this.score,
+    over  : this.over,
+    won   : this.won
+  });
+};
+
+GameManager.prototype.loadSavedState = function () {
+  var old_state = this.history.pop ();
+  this.grid  = old_state.grid;
+  this.score = old_state.score;
+  this.over  = old_state.over;
+  this.won   = old_state.won;
 };
 
 // Keep playing after winning (allows going over 2048)
@@ -54,8 +77,32 @@ GameManager.prototype.setup = function () {
     this.addStartTiles();
   }
 
+  // Start up the AI
+  this.AI = new AI(this);
+
   // Update the actuator
   this.actuate();
+
+  // Start the AI       
+  this.search();   
+};
+
+GameManager.prototype.search = function() {
+  var move = this.AI.lookAhead();
+  this.move(move);
+
+  if (this.isGameTerminated()) { 
+    return;
+  }
+
+  var self = this;
+
+  setTimeout(
+    function() { 
+      self.search();
+    }, 
+    100
+  );
 };
 
 // Set up the initial tiles to start the game with
@@ -127,17 +174,19 @@ GameManager.prototype.moveTile = function (tile, cell) {
 };
 
 // Move tiles on the grid in the specified direction
-GameManager.prototype.move = function (direction) {
+GameManager.prototype.move = function (direction, lookAhead) {
   // 0: up, 1: right, 2: down, 3: left
   var self = this;
 
-  if (this.isGameTerminated()) return; // Don't do anything if the game's over
+  if (this.isGameTerminated() && !lookAhead) return; // Don't do anything if the game's over
 
   var cell, tile;
 
   var vector     = this.getVector(direction);
   var traversals = this.buildTraversals(vector);
   var moved      = false;
+
+  this.saveState();
 
   // Save the current tile positions and remove merger information
   this.prepareTiles();
@@ -182,12 +231,13 @@ GameManager.prototype.move = function (direction) {
   if (moved) {
     this.addRandomTile();
 
-    if (!this.movesAvailable()) {
+    if (!this.movesAvailable() && !lookAhead) {
       this.over = true; // Game over!
     }
 
-    this.actuate();
+   this.actuate();
   }
+
 };
 
 // Get the vector representing the chosen direction

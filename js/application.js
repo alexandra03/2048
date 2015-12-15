@@ -1,6 +1,6 @@
 // Wait till the browser is ready to render the game (avoids glitches)
 window.requestAnimationFrame(function () {
-  new GameManager(4, KeyboardInputManager, HTMLActuator, LocalStorageManager);
+  new GameManager(4, KeyboardInputManager, HTMLActuator, LocalStorageManager, AI, BottomlessStack);
 
   // TODO: This code is in need of a refactor (along with the rest)
   var storage     = new LocalStorageManager;
