@@ -101,7 +101,7 @@ AI.prototype.boardValue = function () {
 
 AI.prototype.lookAhead = function () {
 	var best_direction = 0;
-
+	this.grid = jQuery.extend(Grid, {}, this.grid);
 	for (var direction = 0; direction < 4; direction++) {
 		// var serialized = this.game.serialize();
 		// var game = new GameManager()
