@@ -6,6 +6,8 @@ function AI(game) {
 	this.NMWeight  = 1;
 	this.LNGWeight = 1;
 
+	this.max_search_depth = 2
+
 	this.checkThreshold = 6;
 }
 
@@ -117,9 +119,39 @@ AI.prototype.lookAhead = function () {
 		this.game.undo();
 	}
 
-	return best_direction;
+	return best_board_value;
 }
 
+AI.prototype.searchLookAheadHelper = function (depth){
+	if (depth == this.max_search_depth){
+		return [0,this.lookAhead()];
+	}
+
+	var best_direction = 0;
+	var best_board_value = 0;
+	var board_value = 0;
+	var original_board_value = this.boardValue(this.game);
+
+	for (var direction = 0; direction < 4; direction++) {
+		this.game.move(direction, true);
+		this.game.actuator.clearMessage();
+		board_value = this.searchLookAheadHelper(depth + 1)[1];
+		this.game.undo();
+
+		if (board_value > best_board_value && original_board_value!=board_value){
+			best_board_value = board_value;
+			best_direction = direction;
+		}
+	}
+
+	console.log("TEST");
+	console.log(best_board_value);
+	return [best_direction, best_board_value];
+}
+
+AI.prototype.searchLookAhead = function (){
+	return this.searchLookAheadHelper(0)[0];
+}
 
 
 

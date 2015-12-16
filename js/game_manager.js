@@ -88,7 +88,7 @@ GameManager.prototype.setup = function () {
 };
 
 GameManager.prototype.search = function() {
-  var move = this.AI.lookAhead();
+  var move = this.AI.searchLookAhead();
   this.move(move);
 
   if (this.isGameTerminated()) { 
