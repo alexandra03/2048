@@ -93,12 +93,54 @@ AI.prototype.largeNumberGrouping = function (grid) {
 	return 6 - totalDistance/(max_vals.length * second_max_vals.length);
 };
 
+// Calculate the distance of the largest blocks from the corners
+AI.prototype.cornerValue = function (grid) {
+	var cells = grid.cells;
+	var max_val = 0;
+	// Find largest tiles
+	for (var row = 0; row < cells.length; row++){
+		for (var col = 0; col < cells[0].length; col++){
+			if (cells[row][col] != null && cells[row][col].value > max_val){
+				max_val = cells[row][col].value;
+			}
+		}
+	}
+
+	// Make arrays of these largest values
+	var max_vals = [];
+	for (var row = 0; row < cells.length; row++){
+		for (var col = 0; col < cells[0].length; col++){
+			if (cells[row][col] != null && cells[row][col].value == max_val){
+				max_vals.push(cells[row][col]);
+			}
+		}
+	}
+
+	// Find average distance from corner of largest tiles
+	var totalDistance = 0;
+	var corners = [[0,0],[0,3],[3,0],[3,3]];
+	var min_distance;
+	var distance;
+	for (var i = 0; i < max_vals.length; i++){
+		min_distance = 0;
+		for (var j = 0; j < corners.length; j++){
+			distance = (Math.abs(max_vals[i].x - corners[j][0]) + Math.abs(max_vals[i].y - corners[j][1]));
+			if (distance < min_distance){
+				min_distance = distance;
+			}
+		}
+		totalDistance += min_distance;
+	}
+	return 6 - totalDistance/max_vals.length;	
+};
+
 AI.prototype.boardValue = function (game) {	
 	var openTiles = this.openTiles(game.grid);
 	var numMerges = this.numMerges(game);
 	var lrgeNumGr = this.largeNumberGrouping(game.grid);
+	var cornerVal = this.cornerValue(game.grid);
 
-	return openTiles + numMerges + lrgeNumGr;
+	return openTiles + numMerges + lrgeNumGr + cornerVal;
 }
 
 AI.prototype.lookAhead = function () {
