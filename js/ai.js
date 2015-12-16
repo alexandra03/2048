@@ -5,8 +5,9 @@ function AI(game) {
 	this.OTWeight  = 2;
 	this.NMWeight  = 1;
 	this.LNGWeight = 1;
+	this.CVWeight  = 3;
 
-	this.max_search_depth = 4;
+	this.maxSearchDepth = 3;
 
 	this.checkThreshold = 6;
 }
@@ -95,16 +96,20 @@ AI.prototype.largeNumberGrouping = function (grid) {
 
 // Calculate the distance of the largest blocks from the corners
 AI.prototype.cornerValue = function (grid) {
-	var cells = grid.cells;
-	var max_val = 0;
+	var max_val = 2;
+	var cell;
+
 	// Find largest tiles
-	for (var row = 0; row < cells.length; row++){
-		for (var col = 0; col < cells[0].length; col++){
-			if (cells[row][col] != null && cells[row][col].value > max_val){
-				max_val = cells[row][col].value;
+	for (var row = 0; row < this.grid.size; row++){
+		for (var col = 0; col < this.grid.size; col++){
+			cell = this.grid.cells[row][col];
+			if (cell && cell.value > max_val){
+				max_val = cell.value;
 			}
 		}
 	}
+
+	var cells = this.grid.cells;
 
 	// Make arrays of these largest values
 	var max_vals = [];
@@ -135,10 +140,10 @@ AI.prototype.cornerValue = function (grid) {
 };
 
 AI.prototype.boardValue = function (game) {	
-	var openTiles = this.openTiles(game.grid);
-	var numMerges = this.numMerges(game);
-	var lrgeNumGr = this.largeNumberGrouping(game.grid);
-	var cornerVal = this.cornerValue(game.grid);
+	var openTiles = this.openTiles(game.grid) * this.OTWeight;
+	var numMerges = this.numMerges(game) * this.NMWeight;
+	var lrgeNumGr = this.largeNumberGrouping(game.grid) * this.LNGWeight;
+	var cornerVal = this.cornerValue(game.grid) * this.CVWeight;
 
 	return openTiles + numMerges + lrgeNumGr + cornerVal;
 }
@@ -165,8 +170,8 @@ AI.prototype.lookAhead = function () {
 }
 
 AI.prototype.searchLookAheadHelper = function (depth){
-	if (depth == this.max_search_depth){
-		return [0,this.lookAhead()];
+	if (depth == this.maxSearchDepth){
+		return [0, this.lookAhead()];
 	}
 
 	var best_direction = 0;
