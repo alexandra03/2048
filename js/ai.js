@@ -2,7 +2,7 @@ function AI(game) {
 	this.game = game;
 	this.grid = game.grid;
 
-	this.OTWeight  = 1;
+	this.OTWeight  = 2;
 	this.NMWeight  = 1;
 	this.LNGWeight = 1;
 
