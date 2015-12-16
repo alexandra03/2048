@@ -6,7 +6,7 @@ function AI(game) {
 	this.NMWeight  = 1;
 	this.LNGWeight = 1;
 
-	this.max_search_depth = 2
+	this.max_search_depth = 4;
 
 	this.checkThreshold = 6;
 }
@@ -144,8 +144,6 @@ AI.prototype.searchLookAheadHelper = function (depth){
 		}
 	}
 
-	console.log("TEST");
-	console.log(best_board_value);
 	return [best_direction, best_board_value];
 }
 
