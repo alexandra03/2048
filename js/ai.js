@@ -5,7 +5,7 @@ function AI(game) {
 	this.OTWeight  = 2;
 	this.NMWeight  = 1;
 	this.LNGWeight = 1;
-	this.CVWeight  = 3;
+	this.CVWeight  = 0.05;
 
 	this.maxSearchDepth = 3;
 
@@ -139,13 +139,13 @@ AI.prototype.cornerValue = function (grid) {
 	return 6 - totalDistance/max_vals.length;	
 };
 
-AI.prototype.cornerBundle = function () {
+AI.prototype.cornerBundle = function (game) {
 	var total = 0;
 	var cell;
 
 	for (var x = 0; x < this.game.size; x++) {
 		for (var y = 0; y < this.game.size; y++) {
-			cell = this.grid.cellContent({x: x, y: y});
+			cell = game.grid.cellContent({x: x, y: y});
 			if (cell) {
 				total += (6-(x+y)) * Math.log2(cell.value);
 			}
@@ -160,7 +160,7 @@ AI.prototype.boardValue = function (game) {
 	var numMerges = this.numMerges(game) * this.NMWeight;
 	var lrgeNumGr = this.largeNumberGrouping(game.grid) * this.LNGWeight;
 	//var cornerVal = this.cornerValue(game.grid) * this.CVWeight;
-	var cornerVal = this.cornerBundle() * this.CVWeight;
+	var cornerVal = this.cornerBundle(game) * this.CVWeight;
 
 	return openTiles + numMerges + lrgeNumGr + cornerVal;
 };
