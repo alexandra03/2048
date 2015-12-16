@@ -139,14 +139,31 @@ AI.prototype.cornerValue = function (grid) {
 	return 6 - totalDistance/max_vals.length;	
 };
 
+AI.prototype.cornerBundle = function () {
+	var total = 0;
+	var cell;
+
+	for (var x = 0; x < this.game.size; x++) {
+		for (var y = 0; y < this.game.size; y++) {
+			cell = this.grid.cellContent({x: x, y: y});
+			if (cell) {
+				total += (6-(x+y)) * Math.log2(cell.value);
+			}
+		}
+	}
+
+	return total;
+};
+
 AI.prototype.boardValue = function (game) {	
 	var openTiles = this.openTiles(game.grid) * this.OTWeight;
 	var numMerges = this.numMerges(game) * this.NMWeight;
 	var lrgeNumGr = this.largeNumberGrouping(game.grid) * this.LNGWeight;
-	var cornerVal = this.cornerValue(game.grid) * this.CVWeight;
+	//var cornerVal = this.cornerValue(game.grid) * this.CVWeight;
+	var cornerVal = this.cornerBundle() * this.CVWeight;
 
 	return openTiles + numMerges + lrgeNumGr + cornerVal;
-}
+};
 
 AI.prototype.lookAhead = function () {
 	var best_direction = 0;
@@ -167,7 +184,7 @@ AI.prototype.lookAhead = function () {
 	}
 
 	return best_board_value;
-}
+};
 
 AI.prototype.searchLookAheadHelper = function (depth){
 	if (depth == this.maxSearchDepth){
@@ -192,11 +209,11 @@ AI.prototype.searchLookAheadHelper = function (depth){
 	}
 
 	return [best_direction, best_board_value];
-}
+};
 
 AI.prototype.searchLookAhead = function (){
 	return this.searchLookAheadHelper(0)[0];
-}
+};
 
 
 
