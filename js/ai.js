@@ -201,7 +201,7 @@ AI.prototype.lookAhead = function () {
 };
 
 AI.prototype.searchLookAheadHelper = function (depth){
-	if (depth == this.maxSearchDepth){
+	if (depth == this.maxSearchDepth || (this.game.grid.availableCells() > 8 && this.score < 2000 && depth == 2)){
 		return [0, this.lookAhead()];
 	}
 
