@@ -83,26 +83,26 @@ GameManager.prototype.setup = function () {
   // Update the actuator
   this.actuate();
 
-  // Start the AI
-  this.search();   
+  console.log("GAME START");
+  this.AI.logWeights();
+  this.search();
+
+
 };
 
 GameManager.prototype.search = function() {
   var move = this.AI.searchLookAhead();
   this.move(move);
+  console.log(this.score);
 
-  if (this.isGameTerminated()) { 
+  if (this.isGameTerminated()) {
+    this.games--;
+    console.log("GAME OVER");
+    console.log(this.score);
     return;
   }
 
-  var self = this;
-
-  setTimeout(
-    function() { 
-      self.search();
-    }, 
-    100
-  );
+  this.search();
 };
 
 // Set up the initial tiles to start the game with

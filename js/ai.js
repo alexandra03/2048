@@ -5,13 +5,28 @@ function AI(game) {
 	this.OTWeight  = 2;
 	this.NMWeight  = 1;
 	this.LNGWeight = 1;
-	this.CVWeight  = 0.05;
+	this.CVWeight  = 0.1;
 
 	this.maxSearchDepth = 4;
 
 	this.checkThreshold = 6;
 }
 
+// Update the weights of the search heuristics
+AI.prototype.updateWeights = function (OTWeight, NMWeight, LNGWeight, CVWeight){
+	this.OTWeight  = OTWeight;
+	this.NMWeight  = NMWeight;
+	this.LNGWeight = LNGWeight;
+	this.CVWeight  = CVWeight;
+}
+
+// Update the weights of the search heuristics
+AI.prototype.logWeights = function (){
+	console.log("OTWeight " + this.OTWeight);
+	console.log("NMWeight "  + this.NMWeight);
+	console.log("LNGWeight " + this.LNGWeight);
+	console.log("CVWeight "  + this.CVWeight);
+}
 
 // Calculate the number of open tiles
 AI.prototype.openTiles = function (grid) {
