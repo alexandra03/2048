@@ -7,7 +7,7 @@ function AI(game) {
 	this.LNGWeight = 1;
 	this.CVWeight  = 0.05;
 
-	this.maxSearchDepth = 3;
+	this.maxSearchDepth = 4;
 
 	this.checkThreshold = 6;
 }
