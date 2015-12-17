@@ -175,9 +175,8 @@ AI.prototype.boardValue = function (game) {
 	var numMerges = this.numMerges(game) * this.NMWeight;
 	var lrgeNumGr = this.largeNumberGrouping(game.grid) * this.LNGWeight;
 	//var cornerVal = this.cornerValue(game.grid) * this.CVWeight;
-	var cornerVal = this.cornerBundle(game) * this.CVWeight;
 
-	return openTiles + numMerges + lrgeNumGr + cornerVal;
+	return openTiles + numMerges + lrgeNumGr;
 };
 
 AI.prototype.lookAhead = function () {
@@ -215,6 +214,9 @@ AI.prototype.searchLookAheadHelper = function (depth){
 		this.game.move(direction, true);
 		this.game.actuator.clearMessage();
 		board_value = this.searchLookAheadHelper(depth + 1)[1];
+		if (depth == 0){
+			board_value += this.cornerBundle(this.game) * this.CVWeight;
+		}
 		this.game.undo();
 
 		if (board_value > best_board_value && original_board_value!=board_value){
