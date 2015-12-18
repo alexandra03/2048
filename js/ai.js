@@ -7,7 +7,7 @@ function AI(game) {
 	this.LNGWeight = 1;
 	this.CVWeight  = 0.1;
 
-	this.maxSearchDepth = 2;
+	this.maxSearchDepth = 4;
 
 	this.checkThreshold = 6;
 }
@@ -67,18 +67,21 @@ AI.prototype.numMerges = function (game) {
 
 // Heuristic based on the grouping of large tiles
 AI.prototype.largeNumberGrouping = function (grid) {
-	var cells = grid.cells;
+	var cell;
+
 	// Find largest/second largest valued tiles
 	var max_val = 0;
 	var second_max_val = 0;
-	for (var row = 0; row < cells.length; row++){
-		for (var col = 0; col < cells[0].length; col++){
-			if (cells[row][col] != null && cells[row][col].value > max_val){
+
+	for (var x = 0; x < grid.size; x++){
+		for (var y = 0; y < grid.size; y++){
+			cell = grid.cellContent({x: x, y: y});
+			if (cell && cell.value > max_val){
 				second_max_val = max_val;
-				max_val = cells[row][col].value;
+				max_val = cell.value;
 			}
-			else if (cells[row][col] != null && cells[row][col].value > second_max_val && cells[row][col].value != max_val){
-				second_max_val = cells[row][col].value;
+			else if (cell && cell.value > second_max_val && cell.value != max_val){
+				second_max_val = cell.value;
 			}
 		}
 	}
@@ -86,13 +89,15 @@ AI.prototype.largeNumberGrouping = function (grid) {
 	// Make arrays of these largest values
 	var max_vals = [];
 	var second_max_vals = [];
-	for (var row = 0; row < cells.length; row++){
-		for (var col = 0; col < cells[0].length; col++){
-			if (cells[row][col] != null && cells[row][col].value == max_val){
-				max_vals.push(cells[row][col]);
+
+	for (var x = 0; x < grid.size; x++){
+		for (var y = 0; y < grid.size; y++){
+			cell = grid.cellContent({x: x, y: y});
+			if (cell && cell.value == max_val){
+				max_vals.push(cell);
 			}
-			else if (cells[row][col] != null && cells[row][col].value == second_max_val){
-				second_max_vals.push(cells[row][col]);
+			else if (cell && cell.value == second_max_val){
+				second_max_vals.push(cell);
 			}
 		}
 	}
@@ -101,7 +106,8 @@ AI.prototype.largeNumberGrouping = function (grid) {
 	var totalDistance = 0;
 	for (var i = 0; i < max_vals.length; i++){
 		for (var j = 0; j < second_max_vals.length; j++){
-			totalDistance += (Math.abs(max_vals[i].x - second_max_vals[j].x) + Math.abs(max_vals[i].y - second_max_vals[j].y))
+			totalDistance += (Math.abs(max_vals[i].x - second_max_vals[j].x)\
+							+ Math.abs(max_vals[i].y - second_max_vals[j].y));
 		}
 	}
 
