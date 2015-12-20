@@ -130,6 +130,19 @@ Grid.prototype.withinBounds = function (position) {
          position.y >= 0 && position.y < this.size;
 };
 
+Grid.prototype.equal = function(that) {
+  for (var x = 0; x < this.size; x++) {
+    for (var y = 0; y < this.size; y++) {
+      var cell = {x: x, y: y};
+      if (this.cellContent(cell) != that.cellContent(cell)) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+};
+
 Grid.prototype.serialize = function () {
   var cellState = [];
 
