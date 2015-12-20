@@ -106,7 +106,7 @@ AI.prototype.largeNumberGrouping = function (grid) {
 	var totalDistance = 0;
 	for (var i = 0; i < max_vals.length; i++){
 		for (var j = 0; j < second_max_vals.length; j++){
-			totalDistance += (Math.abs(max_vals[i].x - second_max_vals[j].x)\
+			totalDistance += (Math.abs(max_vals[i].x - second_max_vals[j].x) 
 							+ Math.abs(max_vals[i].y - second_max_vals[j].y));
 		}
 	}
